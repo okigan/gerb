@@ -16,6 +16,8 @@ import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 
+const nodegomodule = require('nodegomodule');
+
 export default class AppUpdater {
   constructor() {
     log.transports.file.level = 'info';
@@ -77,7 +79,10 @@ const createWindow = async () => {
     },
   });
 
+  nodegomodule.hello();
   mainWindow.loadURL(`file://${__dirname}/index.html`);
+
+  // mainWindow.loadURL(`https://localhost:8080`);
 
   // @TODO: Use 'ready-to-show' event
   //        https://github.com/electron/electron/blob/master/docs/api/browser-window.md#using-ready-to-show-event
@@ -130,3 +135,19 @@ app.on('activate', () => {
   // dock icon is clicked and there are no other windows open.
   if (mainWindow === null) createWindow();
 });
+
+console.log('test log entry');
+
+app.on(
+  'certificate-error',
+  (event, webContents, url, error, certificate, callback) => {
+    // On certificate error we disable default behaviour (stop loading the page)
+    // and we then say "it is all fine - true" to the callback
+    console.log('on certificate-error url:', url);
+
+    if (url !== undefined && url.startsWith('https://localhost:8080')) {
+      event.preventDefault();
+      callback(true);
+    }
+  }
+);
