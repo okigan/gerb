@@ -1,7 +1,7 @@
 #include <node.h>
 #include <v8.h>
 
-#include "/Users/iokulist/Github/okigan/electron_go_sidecar/zapp8_erb/gomodule/build/gomodule.h"
+#include "../gomodule/build/gomodule.h"
 
 void HelloMethod (const v8::FunctionCallbackInfo<v8::Value> &args) {
 

@@ -1,12 +1,12 @@
 {
     "targets": [
         {
-            "target_name": "addon",
+            "target_name": "gomodule_addon",
             "sources": ["nodegomodule.cc"],
             "include_dirs": [
-                "<!(pwd)/../gomodule/build"
+                "<(module_root_dir)/../../"
             ],
-            "libraries": ["<!(pwd)/../gomodule/build/gomodule.so"]
+            "libraries": ["<(module_root_dir)/../../../gomodule/build/gomodule.so"]
         }
     ]
 }

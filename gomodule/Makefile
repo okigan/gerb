@@ -1,4 +1,4 @@
-default: compile-go
+default: build
 
 setup-build-env:
 	brew install protobuf
@@ -12,3 +12,5 @@ gen/service.pb.go: proto/service.proto
 
 compile-go: gen/service.pb.go
 	go build -buildmode=c-archive -o ./build/gomodule.so
+
+build: compile-go
