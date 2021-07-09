@@ -1,9 +1,17 @@
 default: build
 
+detected_OS :=$(shell uname)
+
 setup-build-env:
+ifeq ($(detected_OS),Darwin)
 	brew install protobuf
 	brew install protoc-gen-go
 	brew install protoc-gen-grpc-web
+endif
+ifeq ($(detected_OS),Linux)
+	apt update
+	apt install -y protobuf-compiler
+endif
 
 gen/service.pb.go: proto/service.proto
 	mkdir -p ./gen

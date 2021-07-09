@@ -1,3 +1,4 @@
+default: build
 
 .PHONY: setup-build-env
 setup-build-env:
