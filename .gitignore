@@ -40,7 +40,7 @@ src/renderer.prod.js
 src/renderer.prod.js.map
 src/style.css
 src/style.css.map
-dist
+src/dist
 dll
 main.js
 main.js.map
@@ -50,11 +50,7 @@ npm-debug.log.*
 *.css.d.ts
 *.sass.d.ts
 *.scss.d.ts
-gomodule/build/gomodule.h
-gomodule/build/gomodule.so
-nodegomodule/bin/darwin-x64-89/nodegomodule.node
-nodegomodule/build/addon.target.mk
-nodegomodule/build/binding.Makefile
-nodegomodule/build/config.gypi
-nodegomodule/build/gyp-mac-tool
-nodegomodule/build/Makefile
+
+gomodule/build/
+nodegomodule/bin/
+nodegomodule/build/
