@@ -20,6 +20,7 @@ const _ = grpc.SupportPackageIsVersion7
 type HardwareMonitorClient interface {
 	// Monitor will output stats about the hardware on the system host
 	Monitor(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (HardwareMonitor_MonitorClient, error)
+	MonitorSingle(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (*HardwareStats, error)
 }
 
 type hardwareMonitorClient struct {
@@ -62,12 +63,22 @@ func (x *hardwareMonitorMonitorClient) Recv() (*HardwareStats, error) {
 	return m, nil
 }
 
+func (c *hardwareMonitorClient) MonitorSingle(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (*HardwareStats, error) {
+	out := new(HardwareStats)
+	err := c.cc.Invoke(ctx, "/main.HardwareMonitor/MonitorSingle", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // HardwareMonitorServer is the server API for HardwareMonitor service.
 // All implementations must embed UnimplementedHardwareMonitorServer
 // for forward compatibility
 type HardwareMonitorServer interface {
 	// Monitor will output stats about the hardware on the system host
 	Monitor(*EmptyRequest, HardwareMonitor_MonitorServer) error
+	MonitorSingle(context.Context, *EmptyRequest) (*HardwareStats, error)
 	mustEmbedUnimplementedHardwareMonitorServer()
 }
 
@@ -77,6 +88,9 @@ type UnimplementedHardwareMonitorServer struct {
 
 func (UnimplementedHardwareMonitorServer) Monitor(*EmptyRequest, HardwareMonitor_MonitorServer) error {
 	return status.Errorf(codes.Unimplemented, "method Monitor not implemented")
+}
+func (UnimplementedHardwareMonitorServer) MonitorSingle(context.Context, *EmptyRequest) (*HardwareStats, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MonitorSingle not implemented")
 }
 func (UnimplementedHardwareMonitorServer) mustEmbedUnimplementedHardwareMonitorServer() {}
 
@@ -112,13 +126,36 @@ func (x *hardwareMonitorMonitorServer) Send(m *HardwareStats) error {
 	return x.ServerStream.SendMsg(m)
 }
 
+func _HardwareMonitor_MonitorSingle_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(EmptyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HardwareMonitorServer).MonitorSingle(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/main.HardwareMonitor/MonitorSingle",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HardwareMonitorServer).MonitorSingle(ctx, req.(*EmptyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // HardwareMonitor_ServiceDesc is the grpc.ServiceDesc for HardwareMonitor service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var HardwareMonitor_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "main.HardwareMonitor",
 	HandlerType: (*HardwareMonitorServer)(nil),
-	Methods:     []grpc.MethodDesc{},
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "MonitorSingle",
+			Handler:    _HardwareMonitor_MonitorSingle_Handler,
+		},
+	},
 	Streams: []grpc.StreamDesc{
 		{
 			StreamName:    "Monitor",

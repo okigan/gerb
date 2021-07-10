@@ -7,7 +7,7 @@
 //go:generate protoc -I=./proto service.proto --go_out=./gen --go_opt=paths=source_relative
 //go:generate protoc -I=./proto service.proto --go-grpc_out=./gen
 //go:generate protoc -I=./proto service.proto --js_out=import_style=commonjs,binary:./gen
-//go:generate protoc -I=./proto service.proto --grpc-web_out=import_style=commonjs,mode=grpcwebtext:./gen
+//xxgo:generate protoc -I=./proto service.proto --grpc-web_out=import_style=commonjs,mode=grpcwebtext:./gen
 //go:generate protoc -I=./proto service.proto --grpc-web_out=import_style=typescript,mode=grpcwebtext:./gen
 
 package main
@@ -15,6 +15,7 @@ package main
 import "C"
 
 import (
+	"context"
 	"embed"
 	"fmt"
 	hardwaremonitoring "golangmodule/gen"
@@ -126,7 +127,6 @@ type Server struct {
 	hardwaremonitoring.UnimplementedHardwareMonitorServer
 }
 
-// Monitor is used to start a stream of HardwareStats
 func (s *Server) Monitor(req *hardwaremonitoring.EmptyRequest,
 	stream hardwaremonitoring.HardwareMonitor_MonitorServer) error {
 	// Start a ticker that executes each 2 seconds
@@ -158,3 +158,16 @@ func (s *Server) Monitor(req *hardwaremonitoring.EmptyRequest,
 }
 
 var counter int32 = 0
+
+func (s *Server) MonitorSingle(context.Context, *hardwaremonitoring.EmptyRequest) (*hardwaremonitoring.HardwareStats, error) {
+	log.Println("in MonitorSingle")
+
+	hwStats := hardwaremonitoring.HardwareStats{
+		Cpu:        counter,
+		MemoryFree: counter,
+		MemoryUsed: counter,
+	}
+	counter++
+
+	return &hwStats, nil
+}

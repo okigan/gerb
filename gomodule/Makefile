@@ -13,7 +13,7 @@ ifeq ($(detected_OS),Linux)
 	apt install -y protobuf-compiler
 endif
 
-gen/service.pb.go: proto/service.proto
+gen/service.pb.go: proto/service.proto golang.go
 	mkdir -p ./gen
 	PATH=$${PATH}:$$(go env GOPATH)/bin go generate
 	cp -r ./gen ../src/

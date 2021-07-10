@@ -140,7 +140,7 @@ console.log('test log entry');
 
 app.on(
   'certificate-error',
-  (event, webContents, url, error, certificate, callback) => {
+  (event, _webContents, url, _error, _certificate, callback) => {
     // On certificate error we disable default behaviour (stop loading the page)
     // and we then say "it is all fine - true" to the callback
     console.log('on certificate-error url:', url);
