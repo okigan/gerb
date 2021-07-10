@@ -30,7 +30,13 @@ jobs:
         run: |
           npm install --global yarn
 
-      - name: get protoc
+      - if: matrix.os == 'macos-latest'
+        name: get protoc
+        run: |
+          make setup-build-env
+
+      - if: matrix.os == 'ubuntu-latest'
+        name: get protoc
         run: |
           sudo make setup-build-env
 
