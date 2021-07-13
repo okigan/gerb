@@ -16,7 +16,7 @@ import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 
-const nodegomodule = require('nodegomodule');
+const gomodulewrapper = require('gomodulewrapper');
 
 export default class AppUpdater {
   constructor() {
@@ -79,7 +79,7 @@ const createWindow = async () => {
     },
   });
 
-  nodegomodule.hello();
+  gomodulewrapper.hello();
   mainWindow.loadURL(`file://${__dirname}/index.html`);
 
   // mainWindow.loadURL(`https://localhost:8080`);

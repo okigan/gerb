@@ -4,11 +4,11 @@
 // go get -u google.golang.org/grpc/cmd/protoc-gen-go-grpc
 // go install google.golang.org/grpc/cmd/protoc-gen-go-grpc
 
-//go:generate protoc -I=./proto service.proto --go_out=./gen --go_opt=paths=source_relative
-//go:generate protoc -I=./proto service.proto --go-grpc_out=./gen
-//go:generate protoc -I=./proto service.proto --js_out=import_style=commonjs,binary:./gen
-//xxgo:generate protoc -I=./proto service.proto --grpc-web_out=import_style=commonjs,mode=grpcwebtext:./gen
-//go:generate protoc -I=./proto service.proto --grpc-web_out=import_style=typescript,mode=grpcwebtext:./gen
+//go:generate protoc -I=./proto service.proto --go_out=./generated --go_opt=paths=source_relative
+//go:generate protoc -I=./proto service.proto --go-grpc_out=./generated
+//go:generate protoc -I=./proto service.proto --js_out=import_style=commonjs,binary:./generated
+//go:generate protoc -I=./proto service.proto --grpc-web_out=import_style=commonjs,mode=grpcwebtext:./generated
+//go:generate protoc -I=./proto service.proto --grpc-web_out=import_style=typescript,mode=grpcwebtext:./generated
 
 package main
 
@@ -18,7 +18,7 @@ import (
 	"context"
 	"embed"
 	"fmt"
-	hardwaremonitoring "golangmodule/gen"
+	gomoduleapi "golangmodule/generated"
 	"io/fs"
 	"log"
 	"net"
@@ -29,7 +29,7 @@ import (
 	"google.golang.org/grpc"
 )
 
-//go:embed protonappui/dist/index.html
+//go:embed webapp/dist/index.html
 var content embed.FS
 
 //export Hello
@@ -52,7 +52,7 @@ func run_server() {
 	gRPCserver := grpc.NewServer()
 
 	// Create a server object of the type we created in server.go
-	hardwaremonitoring.RegisterHardwareMonitorServer(gRPCserver, &Server{})
+	gomoduleapi.RegisterHardwareMonitorServer(gRPCserver, &Server{})
 
 	go func() {
 		fmt.Println("Starting server")
@@ -124,11 +124,11 @@ func (m *grpcMultiplexer) Handler(next http.Handler) http.Handler {
 // Server is our struct that will handle the Hardware monitoring Logic
 // It will fulfill the gRPC interface generated
 type Server struct {
-	hardwaremonitoring.UnimplementedHardwareMonitorServer
+	gomoduleapi.UnimplementedHardwareMonitorServer
 }
 
-func (s *Server) Monitor(req *hardwaremonitoring.EmptyRequest,
-	stream hardwaremonitoring.HardwareMonitor_MonitorServer) error {
+func (s *Server) Monitor(req *gomoduleapi.EmptyRequest,
+	stream gomoduleapi.HardwareMonitor_MonitorServer) error {
 	// Start a ticker that executes each 2 seconds
 	timer := time.NewTicker(2 * time.Second)
 
@@ -141,7 +141,7 @@ func (s *Server) Monitor(req *hardwaremonitoring.EmptyRequest,
 		case <-timer.C:
 			log.Println("sending stats")
 			// Grab stats and output
-			hwStats := &hardwaremonitoring.HardwareStats{
+			hwStats := &gomoduleapi.HardwareStats{
 				Cpu:        counter,
 				MemoryFree: counter,
 				MemoryUsed: counter,
@@ -159,10 +159,10 @@ func (s *Server) Monitor(req *hardwaremonitoring.EmptyRequest,
 
 var counter int32 = 0
 
-func (s *Server) MonitorSingle(context.Context, *hardwaremonitoring.EmptyRequest) (*hardwaremonitoring.HardwareStats, error) {
+func (s *Server) MonitorSingle(context.Context, *gomoduleapi.EmptyRequest) (*gomoduleapi.HardwareStats, error) {
 	log.Println("in MonitorSingle")
 
-	hwStats := hardwaremonitoring.HardwareStats{
+	hwStats := gomoduleapi.HardwareStats{
 		Cpu:        counter,
 		MemoryFree: counter,
 		MemoryUsed: counter,

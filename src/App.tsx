@@ -4,8 +4,8 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import icon from '../assets/icon.svg';
 import './App.global.css';
 
-import { EmptyRequest, HardwareStats } from './gen/service_grpc_web_pb';
-import { HardwareMonitorClient } from './gen/ServiceServiceClientPb';
+import { EmptyRequest, HardwareStats } from './generated/service_grpc_web_pb';
+import { HardwareMonitorClient } from './generated/ServiceServiceClientPb';
 
 setTimeout(() => {
   const client = new HardwareMonitorClient('https://localhost:8080');

@@ -17,6 +17,6 @@
   "dependencies": {
     "google-protobuf": "^3.17.3",
     "grpc-web": "^1.2.1",
-    "nodegomodule": "../nodegomodule"
+    "gomodulewrapper": "../gomodulewrapper"
   }
 }
