@@ -82,6 +82,7 @@ const createWindow = async () => {
   // });
   // mainWindow.loadURL(`file://${__dirname}/index.html`);
 
+  // electron still has issue with wenauthn: https://github.com/electron/electron/issues/27355
   mainWindow = new BrowserWindow({
     show: false,
     width: 1024,
