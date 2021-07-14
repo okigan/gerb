@@ -11,7 +11,7 @@
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 import path from 'path';
-import { app, BrowserWindow, shell } from 'electron';
+import { app, BrowserWindow, shell, Tray, Menu } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
@@ -54,6 +54,7 @@ const installExtensions = async () => {
 };
 
 gomodulewrapper.startGoModule();
+
 const createWindow = async () => {
   if (
     process.env.NODE_ENV === 'development' ||
@@ -70,17 +71,28 @@ const createWindow = async () => {
     return path.join(RESOURCES_PATH, ...paths);
   };
 
+  // mainWindow = new BrowserWindow({
+  //   show: false,
+  //   width: 1024,
+  //   height: 728,
+  //   icon: getAssetPath('icon.png'),
+  //   webPreferences: {
+  //     nodeIntegration: true,
+  //   },
+  // });
+  // mainWindow.loadURL(`file://${__dirname}/index.html`);
+
   mainWindow = new BrowserWindow({
     show: false,
     width: 1024,
     height: 728,
     icon: getAssetPath('icon.png'),
     webPreferences: {
-      nodeIntegration: true,
+      nodeIntegration: false,
+      nativeWindowOpen: false,
     },
   });
-
-  mainWindow.loadURL(`file://${__dirname}/index.html`);
+  mainWindow.loadURL('https://webauthn.io/');
 
   // mainWindow.loadURL(`https://localhost:8080`);
 
@@ -111,6 +123,22 @@ const createWindow = async () => {
     shell.openExternal(url);
   });
 
+  const tray = new Tray(getAssetPath('icons/16x16.png'));
+  const contextMenu = Menu.buildFromTemplate([
+    {
+      label: 'Item1',
+      type: 'radio',
+      click() {
+        console.log('Item1 clicked');
+      },
+    },
+    { label: 'Item2', type: 'radio' },
+    { label: 'Item3', type: 'radio', checked: true },
+    { label: 'Item4', type: 'radio' },
+  ]);
+  tray.setToolTip('This is my application.');
+  tray.setContextMenu(contextMenu);
+
   // Remove this if your app does not use auto updates
   // eslint-disable-next-line
   new AppUpdater();
@@ -128,7 +156,13 @@ app.on('window-all-closed', () => {
   }
 });
 
-app.whenReady().then(createWindow).catch(console.log);
+app
+  .whenReady()
+  .then(() => {
+    createWindow();
+    return null;
+  })
+  .catch(console.log);
 
 app.on('activate', () => {
   // On macOS it's common to re-create a window in the app when the
