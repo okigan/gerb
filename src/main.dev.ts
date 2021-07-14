@@ -53,6 +53,7 @@ const installExtensions = async () => {
     .catch(console.log);
 };
 
+gomodulewrapper.startGoModule();
 const createWindow = async () => {
   if (
     process.env.NODE_ENV === 'development' ||
@@ -79,7 +80,6 @@ const createWindow = async () => {
     },
   });
 
-  gomodulewrapper.startGoModule();
   mainWindow.loadURL(`file://${__dirname}/index.html`);
 
   // mainWindow.loadURL(`https://localhost:8080`);
