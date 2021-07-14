@@ -26,7 +26,8 @@ jobs:
         with:
           go-version: ${{ matrix.go }}
 
-      - name: Set up MinGW
+      - if: matrix.os == 'windows-latest'
+        name: Set up MinGW
         uses: egor-tensin/setup-mingw@v2
         with:
           platform: x64
