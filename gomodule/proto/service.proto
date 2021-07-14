@@ -5,19 +5,17 @@ package main;
 option go_package = "./;gomoduleapi";
 
 // HardwareStats is a struct containing information about the systems Memory usage and CPU
-message HardwareStats {
-    int32 cpu = 1;
-    int32 memory_free = 2;
-    int32 memory_used = 3;
+message CounterInfo {
+    int32 count = 1;
 }
 // EmptyRequest is a way to call gRPC functions without any input data
 message EmptyRequest {}
 
-service HardwareMonitor{
+service Counter {
     // Monitor will output stats about the hardware on the system host
-    rpc Monitor(EmptyRequest)
-    returns (stream HardwareStats) {};
+    rpc GetCounterStream(EmptyRequest)
+    returns (stream CounterInfo) {};
 
-    rpc MonitorSingle(EmptyRequest)
-    returns (HardwareStats) {};
+    rpc GetCounter(EmptyRequest)
+    returns (CounterInfo) {};
 }

@@ -14,29 +14,29 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-// HardwareMonitorClient is the client API for HardwareMonitor service.
+// CounterClient is the client API for Counter service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type HardwareMonitorClient interface {
+type CounterClient interface {
 	// Monitor will output stats about the hardware on the system host
-	Monitor(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (HardwareMonitor_MonitorClient, error)
-	MonitorSingle(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (*HardwareStats, error)
+	GetCounterStream(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (Counter_GetCounterStreamClient, error)
+	GetCounter(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (*CounterInfo, error)
 }
 
-type hardwareMonitorClient struct {
+type counterClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewHardwareMonitorClient(cc grpc.ClientConnInterface) HardwareMonitorClient {
-	return &hardwareMonitorClient{cc}
+func NewCounterClient(cc grpc.ClientConnInterface) CounterClient {
+	return &counterClient{cc}
 }
 
-func (c *hardwareMonitorClient) Monitor(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (HardwareMonitor_MonitorClient, error) {
-	stream, err := c.cc.NewStream(ctx, &HardwareMonitor_ServiceDesc.Streams[0], "/main.HardwareMonitor/Monitor", opts...)
+func (c *counterClient) GetCounterStream(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (Counter_GetCounterStreamClient, error) {
+	stream, err := c.cc.NewStream(ctx, &Counter_ServiceDesc.Streams[0], "/main.Counter/GetCounterStream", opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &hardwareMonitorMonitorClient{stream}
+	x := &counterGetCounterStreamClient{stream}
 	if err := x.ClientStream.SendMsg(in); err != nil {
 		return nil, err
 	}
@@ -46,120 +46,120 @@ func (c *hardwareMonitorClient) Monitor(ctx context.Context, in *EmptyRequest, o
 	return x, nil
 }
 
-type HardwareMonitor_MonitorClient interface {
-	Recv() (*HardwareStats, error)
+type Counter_GetCounterStreamClient interface {
+	Recv() (*CounterInfo, error)
 	grpc.ClientStream
 }
 
-type hardwareMonitorMonitorClient struct {
+type counterGetCounterStreamClient struct {
 	grpc.ClientStream
 }
 
-func (x *hardwareMonitorMonitorClient) Recv() (*HardwareStats, error) {
-	m := new(HardwareStats)
+func (x *counterGetCounterStreamClient) Recv() (*CounterInfo, error) {
+	m := new(CounterInfo)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
 	return m, nil
 }
 
-func (c *hardwareMonitorClient) MonitorSingle(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (*HardwareStats, error) {
-	out := new(HardwareStats)
-	err := c.cc.Invoke(ctx, "/main.HardwareMonitor/MonitorSingle", in, out, opts...)
+func (c *counterClient) GetCounter(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (*CounterInfo, error) {
+	out := new(CounterInfo)
+	err := c.cc.Invoke(ctx, "/main.Counter/GetCounter", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// HardwareMonitorServer is the server API for HardwareMonitor service.
-// All implementations must embed UnimplementedHardwareMonitorServer
+// CounterServer is the server API for Counter service.
+// All implementations must embed UnimplementedCounterServer
 // for forward compatibility
-type HardwareMonitorServer interface {
+type CounterServer interface {
 	// Monitor will output stats about the hardware on the system host
-	Monitor(*EmptyRequest, HardwareMonitor_MonitorServer) error
-	MonitorSingle(context.Context, *EmptyRequest) (*HardwareStats, error)
-	mustEmbedUnimplementedHardwareMonitorServer()
+	GetCounterStream(*EmptyRequest, Counter_GetCounterStreamServer) error
+	GetCounter(context.Context, *EmptyRequest) (*CounterInfo, error)
+	mustEmbedUnimplementedCounterServer()
 }
 
-// UnimplementedHardwareMonitorServer must be embedded to have forward compatible implementations.
-type UnimplementedHardwareMonitorServer struct {
+// UnimplementedCounterServer must be embedded to have forward compatible implementations.
+type UnimplementedCounterServer struct {
 }
 
-func (UnimplementedHardwareMonitorServer) Monitor(*EmptyRequest, HardwareMonitor_MonitorServer) error {
-	return status.Errorf(codes.Unimplemented, "method Monitor not implemented")
+func (UnimplementedCounterServer) GetCounterStream(*EmptyRequest, Counter_GetCounterStreamServer) error {
+	return status.Errorf(codes.Unimplemented, "method GetCounterStream not implemented")
 }
-func (UnimplementedHardwareMonitorServer) MonitorSingle(context.Context, *EmptyRequest) (*HardwareStats, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method MonitorSingle not implemented")
+func (UnimplementedCounterServer) GetCounter(context.Context, *EmptyRequest) (*CounterInfo, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetCounter not implemented")
 }
-func (UnimplementedHardwareMonitorServer) mustEmbedUnimplementedHardwareMonitorServer() {}
+func (UnimplementedCounterServer) mustEmbedUnimplementedCounterServer() {}
 
-// UnsafeHardwareMonitorServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to HardwareMonitorServer will
+// UnsafeCounterServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to CounterServer will
 // result in compilation errors.
-type UnsafeHardwareMonitorServer interface {
-	mustEmbedUnimplementedHardwareMonitorServer()
+type UnsafeCounterServer interface {
+	mustEmbedUnimplementedCounterServer()
 }
 
-func RegisterHardwareMonitorServer(s grpc.ServiceRegistrar, srv HardwareMonitorServer) {
-	s.RegisterService(&HardwareMonitor_ServiceDesc, srv)
+func RegisterCounterServer(s grpc.ServiceRegistrar, srv CounterServer) {
+	s.RegisterService(&Counter_ServiceDesc, srv)
 }
 
-func _HardwareMonitor_Monitor_Handler(srv interface{}, stream grpc.ServerStream) error {
+func _Counter_GetCounterStream_Handler(srv interface{}, stream grpc.ServerStream) error {
 	m := new(EmptyRequest)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
-	return srv.(HardwareMonitorServer).Monitor(m, &hardwareMonitorMonitorServer{stream})
+	return srv.(CounterServer).GetCounterStream(m, &counterGetCounterStreamServer{stream})
 }
 
-type HardwareMonitor_MonitorServer interface {
-	Send(*HardwareStats) error
+type Counter_GetCounterStreamServer interface {
+	Send(*CounterInfo) error
 	grpc.ServerStream
 }
 
-type hardwareMonitorMonitorServer struct {
+type counterGetCounterStreamServer struct {
 	grpc.ServerStream
 }
 
-func (x *hardwareMonitorMonitorServer) Send(m *HardwareStats) error {
+func (x *counterGetCounterStreamServer) Send(m *CounterInfo) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-func _HardwareMonitor_MonitorSingle_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Counter_GetCounter_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(EmptyRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(HardwareMonitorServer).MonitorSingle(ctx, in)
+		return srv.(CounterServer).GetCounter(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/main.HardwareMonitor/MonitorSingle",
+		FullMethod: "/main.Counter/GetCounter",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(HardwareMonitorServer).MonitorSingle(ctx, req.(*EmptyRequest))
+		return srv.(CounterServer).GetCounter(ctx, req.(*EmptyRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// HardwareMonitor_ServiceDesc is the grpc.ServiceDesc for HardwareMonitor service.
+// Counter_ServiceDesc is the grpc.ServiceDesc for Counter service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var HardwareMonitor_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "main.HardwareMonitor",
-	HandlerType: (*HardwareMonitorServer)(nil),
+var Counter_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "main.Counter",
+	HandlerType: (*CounterServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "MonitorSingle",
-			Handler:    _HardwareMonitor_MonitorSingle_Handler,
+			MethodName: "GetCounter",
+			Handler:    _Counter_GetCounter_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{
 		{
-			StreamName:    "Monitor",
-			Handler:       _HardwareMonitor_Monitor_Handler,
+			StreamName:    "GetCounterStream",
+			Handler:       _Counter_GetCounterStream_Handler,
 			ServerStreams: true,
 		},
 	},

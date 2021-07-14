@@ -8,7 +8,7 @@ import (
 	"log"
 	"time"
 
-	hardwaremonitoring "golangmodule/gen"
+	hardwaremonitoring "golangmodule/generated"
 
 	"google.golang.org/grpc"
 )
@@ -25,13 +25,13 @@ func main() {
 	// Close connection when we are done
 	defer conn.Close()
 	// Use the generated NewHardwareMonitorClient method and pass our Connection
-	client := hardwaremonitoring.NewHardwareMonitorClient(conn)
+	client := hardwaremonitoring.NewCounterClient(conn)
 
 	// Call Monitor to receive the Stream of data
 	// With an empty request
 	emptyreq := &hardwaremonitoring.EmptyRequest{}
 	// call Monitor function, this will return a stream of data
-	stream, err := client.Monitor(ctx, emptyreq)
+	stream, err := client.GetCounterStream(ctx, emptyreq)
 	if err != nil {
 		panic(err)
 	}
@@ -55,8 +55,6 @@ func main() {
 			}
 			fmt.Println("New Hardware state receieved")
 			fmt.Println("CPU Usage: ", res.Cpu)
-			fmt.Println("Memory Used: ", res.MemoryUsed)
-			fmt.Println("Memory Free: ", res.MemoryFree)
 		}
 	}
 }

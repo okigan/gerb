@@ -2,29 +2,21 @@ import * as jspb from 'google-protobuf'
 
 
 
-export class HardwareStats extends jspb.Message {
-  getCpu(): number;
-  setCpu(value: number): HardwareStats;
-
-  getMemoryFree(): number;
-  setMemoryFree(value: number): HardwareStats;
-
-  getMemoryUsed(): number;
-  setMemoryUsed(value: number): HardwareStats;
+export class CounterInfo extends jspb.Message {
+  getCount(): number;
+  setCount(value: number): CounterInfo;
 
   serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): HardwareStats.AsObject;
-  static toObject(includeInstance: boolean, msg: HardwareStats): HardwareStats.AsObject;
-  static serializeBinaryToWriter(message: HardwareStats, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): HardwareStats;
-  static deserializeBinaryFromReader(message: HardwareStats, reader: jspb.BinaryReader): HardwareStats;
+  toObject(includeInstance?: boolean): CounterInfo.AsObject;
+  static toObject(includeInstance: boolean, msg: CounterInfo): CounterInfo.AsObject;
+  static serializeBinaryToWriter(message: CounterInfo, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): CounterInfo;
+  static deserializeBinaryFromReader(message: CounterInfo, reader: jspb.BinaryReader): CounterInfo;
 }
 
-export namespace HardwareStats {
+export namespace CounterInfo {
   export type AsObject = {
-    cpu: number,
-    memoryFree: number,
-    memoryUsed: number,
+    count: number,
   }
 }
 

@@ -40,7 +40,7 @@ func startGoModule() *C.char {
 
 	time.Sleep(1000)
 
-	return C.CString("gomodule started!")
+	return C.CString("gomodule server started!")
 }
 
 // required to build
@@ -53,7 +53,7 @@ func run_server() {
 	gRPCserver := grpc.NewServer()
 
 	// Create a server object of the type we created in server.go
-	gomoduleapi.RegisterHardwareMonitorServer(gRPCserver, &Server{})
+	gomoduleapi.RegisterCounterServer(gRPCserver, &Server{})
 
 	go func() {
 		log.Println("Starting grpc server")
@@ -113,11 +113,13 @@ func (m *grpcMultiplexer) Handler(next http.Handler) http.Handler {
 // Server is our struct that will handle the Hardware monitoring Logic
 // It will fulfill the gRPC interface generated
 type Server struct {
-	gomoduleapi.UnimplementedHardwareMonitorServer
+	gomoduleapi.UnimplementedCounterServer
 }
 
-func (s *Server) Monitor(req *gomoduleapi.EmptyRequest,
-	stream gomoduleapi.HardwareMonitor_MonitorServer) error {
+func (s *Server) GetCounterStream(req *gomoduleapi.EmptyRequest,
+	stream gomoduleapi.Counter_GetCounterStreamServer) error {
+	log.Println("in GetCounter")
+
 	// Start a ticker that executes each 2 seconds
 	timer := time.NewTicker(2 * time.Second)
 
@@ -130,10 +132,8 @@ func (s *Server) Monitor(req *gomoduleapi.EmptyRequest,
 		case <-timer.C:
 			log.Println("sending stats")
 			// Grab stats and output
-			hwStats := &gomoduleapi.HardwareStats{
-				Cpu:        counter,
-				MemoryFree: counter,
-				MemoryUsed: counter,
+			hwStats := &gomoduleapi.CounterInfo{
+				Count: counter,
 			}
 			counter++
 
@@ -148,13 +148,11 @@ func (s *Server) Monitor(req *gomoduleapi.EmptyRequest,
 
 var counter int32 = 0
 
-func (s *Server) MonitorSingle(context.Context, *gomoduleapi.EmptyRequest) (*gomoduleapi.HardwareStats, error) {
-	log.Println("in MonitorSingle")
+func (s *Server) GetCounter(context.Context, *gomoduleapi.EmptyRequest) (*gomoduleapi.CounterInfo, error) {
+	log.Println("in GetCounter")
 
-	hwStats := gomoduleapi.HardwareStats{
-		Cpu:        counter,
-		MemoryFree: counter,
-		MemoryUsed: counter,
+	hwStats := gomoduleapi.CounterInfo{
+		Count: counter,
 	}
 	counter++
 

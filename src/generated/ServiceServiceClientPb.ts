@@ -16,7 +16,7 @@ import * as grpcWeb from 'grpc-web';
 import * as service_pb from './service_pb';
 
 
-export class HardwareMonitorClient {
+export class CounterClient {
   client_: grpcWeb.AbstractClientBase;
   hostname_: string;
   credentials_: null | { [index: string]: string; };
@@ -35,63 +35,63 @@ export class HardwareMonitorClient {
     this.options_ = options;
   }
 
-  methodInfoMonitor = new grpcWeb.AbstractClientBase.MethodInfo(
-    service_pb.HardwareStats,
+  methodInfoGetCounterStream = new grpcWeb.AbstractClientBase.MethodInfo(
+    service_pb.CounterInfo,
     (request: service_pb.EmptyRequest) => {
       return request.serializeBinary();
     },
-    service_pb.HardwareStats.deserializeBinary
+    service_pb.CounterInfo.deserializeBinary
   );
 
-  monitor(
+  getCounterStream(
     request: service_pb.EmptyRequest,
     metadata?: grpcWeb.Metadata) {
     return this.client_.serverStreaming(
       this.hostname_ +
-        '/main.HardwareMonitor/Monitor',
+        '/main.Counter/GetCounterStream',
       request,
       metadata || {},
-      this.methodInfoMonitor);
+      this.methodInfoGetCounterStream);
   }
 
-  methodInfoMonitorSingle = new grpcWeb.AbstractClientBase.MethodInfo(
-    service_pb.HardwareStats,
+  methodInfoGetCounter = new grpcWeb.AbstractClientBase.MethodInfo(
+    service_pb.CounterInfo,
     (request: service_pb.EmptyRequest) => {
       return request.serializeBinary();
     },
-    service_pb.HardwareStats.deserializeBinary
+    service_pb.CounterInfo.deserializeBinary
   );
 
-  monitorSingle(
+  getCounter(
     request: service_pb.EmptyRequest,
-    metadata: grpcWeb.Metadata | null): Promise<service_pb.HardwareStats>;
+    metadata: grpcWeb.Metadata | null): Promise<service_pb.CounterInfo>;
 
-  monitorSingle(
+  getCounter(
     request: service_pb.EmptyRequest,
     metadata: grpcWeb.Metadata | null,
     callback: (err: grpcWeb.Error,
-               response: service_pb.HardwareStats) => void): grpcWeb.ClientReadableStream<service_pb.HardwareStats>;
+               response: service_pb.CounterInfo) => void): grpcWeb.ClientReadableStream<service_pb.CounterInfo>;
 
-  monitorSingle(
+  getCounter(
     request: service_pb.EmptyRequest,
     metadata: grpcWeb.Metadata | null,
     callback?: (err: grpcWeb.Error,
-               response: service_pb.HardwareStats) => void) {
+               response: service_pb.CounterInfo) => void) {
     if (callback !== undefined) {
       return this.client_.rpcCall(
         this.hostname_ +
-          '/main.HardwareMonitor/MonitorSingle',
+          '/main.Counter/GetCounter',
         request,
         metadata || {},
-        this.methodInfoMonitorSingle,
+        this.methodInfoGetCounter,
         callback);
     }
     return this.client_.unaryCall(
     this.hostname_ +
-      '/main.HardwareMonitor/MonitorSingle',
+      '/main.Counter/GetCounter',
     request,
     metadata || {},
-    this.methodInfoMonitorSingle);
+    this.methodInfoGetCounter);
   }
 
 }

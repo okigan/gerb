@@ -26,7 +26,7 @@ proto.main = require('./service_pb.js');
  * @struct
  * @final
  */
-proto.main.HardwareMonitorClient =
+proto.main.CounterClient =
     function(hostname, credentials, options) {
   if (!options) options = {};
   options['format'] = 'text';
@@ -52,7 +52,7 @@ proto.main.HardwareMonitorClient =
  * @struct
  * @final
  */
-proto.main.HardwareMonitorPromiseClient =
+proto.main.CounterPromiseClient =
     function(hostname, credentials, options) {
   if (!options) options = {};
   options['format'] = 'text';
@@ -74,13 +74,13 @@ proto.main.HardwareMonitorPromiseClient =
  * @const
  * @type {!grpc.web.MethodDescriptor<
  *   !proto.main.EmptyRequest,
- *   !proto.main.HardwareStats>}
+ *   !proto.main.CounterInfo>}
  */
-const methodDescriptor_HardwareMonitor_Monitor = new grpc.web.MethodDescriptor(
-  '/main.HardwareMonitor/Monitor',
+const methodDescriptor_Counter_GetCounterStream = new grpc.web.MethodDescriptor(
+  '/main.Counter/GetCounterStream',
   grpc.web.MethodType.SERVER_STREAMING,
   proto.main.EmptyRequest,
-  proto.main.HardwareStats,
+  proto.main.CounterInfo,
   /**
    * @param {!proto.main.EmptyRequest} request
    * @return {!Uint8Array}
@@ -88,7 +88,7 @@ const methodDescriptor_HardwareMonitor_Monitor = new grpc.web.MethodDescriptor(
   function(request) {
     return request.serializeBinary();
   },
-  proto.main.HardwareStats.deserializeBinary
+  proto.main.CounterInfo.deserializeBinary
 );
 
 
@@ -96,10 +96,10 @@ const methodDescriptor_HardwareMonitor_Monitor = new grpc.web.MethodDescriptor(
  * @const
  * @type {!grpc.web.AbstractClientBase.MethodInfo<
  *   !proto.main.EmptyRequest,
- *   !proto.main.HardwareStats>}
+ *   !proto.main.CounterInfo>}
  */
-const methodInfo_HardwareMonitor_Monitor = new grpc.web.AbstractClientBase.MethodInfo(
-  proto.main.HardwareStats,
+const methodInfo_Counter_GetCounterStream = new grpc.web.AbstractClientBase.MethodInfo(
+  proto.main.CounterInfo,
   /**
    * @param {!proto.main.EmptyRequest} request
    * @return {!Uint8Array}
@@ -107,7 +107,7 @@ const methodInfo_HardwareMonitor_Monitor = new grpc.web.AbstractClientBase.Metho
   function(request) {
     return request.serializeBinary();
   },
-  proto.main.HardwareStats.deserializeBinary
+  proto.main.CounterInfo.deserializeBinary
 );
 
 
@@ -115,16 +115,16 @@ const methodInfo_HardwareMonitor_Monitor = new grpc.web.AbstractClientBase.Metho
  * @param {!proto.main.EmptyRequest} request The request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @return {!grpc.web.ClientReadableStream<!proto.main.HardwareStats>}
+ * @return {!grpc.web.ClientReadableStream<!proto.main.CounterInfo>}
  *     The XHR Node Readable Stream
  */
-proto.main.HardwareMonitorClient.prototype.monitor =
+proto.main.CounterClient.prototype.getCounterStream =
     function(request, metadata) {
   return this.client_.serverStreaming(this.hostname_ +
-      '/main.HardwareMonitor/Monitor',
+      '/main.Counter/GetCounterStream',
       request,
       metadata || {},
-      methodDescriptor_HardwareMonitor_Monitor);
+      methodDescriptor_Counter_GetCounterStream);
 };
 
 
@@ -132,16 +132,16 @@ proto.main.HardwareMonitorClient.prototype.monitor =
  * @param {!proto.main.EmptyRequest} request The request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @return {!grpc.web.ClientReadableStream<!proto.main.HardwareStats>}
+ * @return {!grpc.web.ClientReadableStream<!proto.main.CounterInfo>}
  *     The XHR Node Readable Stream
  */
-proto.main.HardwareMonitorPromiseClient.prototype.monitor =
+proto.main.CounterPromiseClient.prototype.getCounterStream =
     function(request, metadata) {
   return this.client_.serverStreaming(this.hostname_ +
-      '/main.HardwareMonitor/Monitor',
+      '/main.Counter/GetCounterStream',
       request,
       metadata || {},
-      methodDescriptor_HardwareMonitor_Monitor);
+      methodDescriptor_Counter_GetCounterStream);
 };
 
 
@@ -149,13 +149,13 @@ proto.main.HardwareMonitorPromiseClient.prototype.monitor =
  * @const
  * @type {!grpc.web.MethodDescriptor<
  *   !proto.main.EmptyRequest,
- *   !proto.main.HardwareStats>}
+ *   !proto.main.CounterInfo>}
  */
-const methodDescriptor_HardwareMonitor_MonitorSingle = new grpc.web.MethodDescriptor(
-  '/main.HardwareMonitor/MonitorSingle',
+const methodDescriptor_Counter_GetCounter = new grpc.web.MethodDescriptor(
+  '/main.Counter/GetCounter',
   grpc.web.MethodType.UNARY,
   proto.main.EmptyRequest,
-  proto.main.HardwareStats,
+  proto.main.CounterInfo,
   /**
    * @param {!proto.main.EmptyRequest} request
    * @return {!Uint8Array}
@@ -163,7 +163,7 @@ const methodDescriptor_HardwareMonitor_MonitorSingle = new grpc.web.MethodDescri
   function(request) {
     return request.serializeBinary();
   },
-  proto.main.HardwareStats.deserializeBinary
+  proto.main.CounterInfo.deserializeBinary
 );
 
 
@@ -171,10 +171,10 @@ const methodDescriptor_HardwareMonitor_MonitorSingle = new grpc.web.MethodDescri
  * @const
  * @type {!grpc.web.AbstractClientBase.MethodInfo<
  *   !proto.main.EmptyRequest,
- *   !proto.main.HardwareStats>}
+ *   !proto.main.CounterInfo>}
  */
-const methodInfo_HardwareMonitor_MonitorSingle = new grpc.web.AbstractClientBase.MethodInfo(
-  proto.main.HardwareStats,
+const methodInfo_Counter_GetCounter = new grpc.web.AbstractClientBase.MethodInfo(
+  proto.main.CounterInfo,
   /**
    * @param {!proto.main.EmptyRequest} request
    * @return {!Uint8Array}
@@ -182,7 +182,7 @@ const methodInfo_HardwareMonitor_MonitorSingle = new grpc.web.AbstractClientBase
   function(request) {
     return request.serializeBinary();
   },
-  proto.main.HardwareStats.deserializeBinary
+  proto.main.CounterInfo.deserializeBinary
 );
 
 
@@ -191,18 +191,18 @@ const methodInfo_HardwareMonitor_MonitorSingle = new grpc.web.AbstractClientBase
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @param {function(?grpc.web.Error, ?proto.main.HardwareStats)}
+ * @param {function(?grpc.web.Error, ?proto.main.CounterInfo)}
  *     callback The callback function(error, response)
- * @return {!grpc.web.ClientReadableStream<!proto.main.HardwareStats>|undefined}
+ * @return {!grpc.web.ClientReadableStream<!proto.main.CounterInfo>|undefined}
  *     The XHR Node Readable Stream
  */
-proto.main.HardwareMonitorClient.prototype.monitorSingle =
+proto.main.CounterClient.prototype.getCounter =
     function(request, metadata, callback) {
   return this.client_.rpcCall(this.hostname_ +
-      '/main.HardwareMonitor/MonitorSingle',
+      '/main.Counter/GetCounter',
       request,
       metadata || {},
-      methodDescriptor_HardwareMonitor_MonitorSingle,
+      methodDescriptor_Counter_GetCounter,
       callback);
 };
 
@@ -212,16 +212,16 @@ proto.main.HardwareMonitorClient.prototype.monitorSingle =
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @return {!Promise<!proto.main.HardwareStats>}
+ * @return {!Promise<!proto.main.CounterInfo>}
  *     Promise that resolves to the response
  */
-proto.main.HardwareMonitorPromiseClient.prototype.monitorSingle =
+proto.main.CounterPromiseClient.prototype.getCounter =
     function(request, metadata) {
   return this.client_.unaryCall(this.hostname_ +
-      '/main.HardwareMonitor/MonitorSingle',
+      '/main.Counter/GetCounter',
       request,
       metadata || {},
-      methodDescriptor_HardwareMonitor_MonitorSingle);
+      methodDescriptor_Counter_GetCounter);
 };
 
 

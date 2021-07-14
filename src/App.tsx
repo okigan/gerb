@@ -4,18 +4,18 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import icon from '../assets/icon.svg';
 import './App.global.css';
 
-import { EmptyRequest, HardwareStats } from './generated/service_grpc_web_pb';
-import { HardwareMonitorClient } from './generated/ServiceServiceClientPb';
+import { EmptyRequest, CounterInfo } from './generated/service_grpc_web_pb';
+import { CounterClient } from './generated/ServiceServiceClientPb';
 
 setTimeout(() => {
-  const client = new HardwareMonitorClient('https://localhost:8080');
+  const client = new CounterClient('https://localhost:8080');
 
   const request = new EmptyRequest();
 
   client
-    .monitorSingle(request, null)
-    .then((value: HardwareStats) => {
-      console.log(value);
+    .getCounter(request, null)
+    .then((value: CounterInfo) => {
+      console.log(value.getCount());
       return 0;
     })
     .catch((reason: any) => {
