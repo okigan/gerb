@@ -1,3 +1,4 @@
+// install the prerequiste tool for proto generation as following:
 // go get -u google.golang.org/protobuf/cmd/protoc-gen-go
 // go install google.golang.org/protobuf/cmd/protoc-gen-go
 
@@ -17,7 +18,6 @@ import "C"
 import (
 	"context"
 	"embed"
-	"fmt"
 	gomoduleapi "golangmodule/generated"
 	"io/fs"
 	"log"
@@ -32,19 +32,20 @@ import (
 //go:embed webapp/dist/index.html
 var content embed.FS
 
-//export Hello
-func Hello() *C.char {
+//export startGoModule
+func startGoModule() *C.char {
 	go func() {
 		run_server()
 	}()
+
 	time.Sleep(1000)
-	return C.CString("Hello world!")
+
+	return C.CString("gomodule started!")
 }
 
 // required to build
 func run_server() {
-
-	fmt.Println("Welcome to streaming HW monitoring3")
+	log.Println("Starting gomodule server")
 	lis, err := net.Listen("tcp", "localhost:7777")
 	if err != nil {
 		panic(err)
@@ -55,7 +56,7 @@ func run_server() {
 	gomoduleapi.RegisterHardwareMonitorServer(gRPCserver, &Server{})
 
 	go func() {
-		fmt.Println("Starting server")
+		log.Println("Starting grpc server")
 		log.Fatal(gRPCserver.Serve(lis))
 	}()
 
@@ -69,10 +70,8 @@ func run_server() {
 
 	// a regular http router
 	mux := http.NewServeMux()
-	var dist, _ = fs.Sub(content, "protonappui/dist")
+	var dist, _ = fs.Sub(content, "webapp/dist")
 
-	// webapp := http.FileServer(http.FS(content))
-	// Host the web app at / and wrap it in a multiplexer
 	mux.Handle("/", multiplex.Handler(http.FileServer(http.FS(dist))))
 
 	// create a http server with some defaults
@@ -83,26 +82,16 @@ func run_server() {
 		ReadTimeout:  150 * time.Second,
 	}
 
-	// host it
-	// go func() {
-	// log.Fatal(srv.ListenAndServe())
-
+	log.Println("Starting mux server")
 	log.Fatal(srv.ListenAndServeTLS(
 		"/Users/iokulist/Github/okigan/electron_go_sidecar/src/app/native/gomodule/localhost.crt",
 		"/Users/iokulist/Github/okigan/electron_go_sidecar/src/app/native/gomodule/localhost.key"))
-	// }()
-
-	//gRPCserver.GracefulStop()
 }
 
 // required to build
 func main() {
 	run_server()
 }
-
-// https://github.com/charlieduong94/node-golang-native-addon-experiment
-// maybe switch to https://www.electronjs.org/docs/tutorial/using-native-node-modules
-// http://blog.cinan.sk/2018/02/22/integrate-native-node-dot-js-modules-into-an-electron-app-1-slash-2/
 
 // grpcMultiplexer enables HTTP requests and gRPC requests to multiple on the same channel
 // this is needed since browsers dont fully support http2 yet

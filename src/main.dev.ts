@@ -79,7 +79,7 @@ const createWindow = async () => {
     },
   });
 
-  gomodulewrapper.hello();
+  gomodulewrapper.startGoModule();
   mainWindow.loadURL(`file://${__dirname}/index.html`);
 
   // mainWindow.loadURL(`https://localhost:8080`);

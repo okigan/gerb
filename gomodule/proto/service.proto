@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package main;
 
-option go_package = "./;hardwaremonitoring";
+option go_package = "./;gomoduleapi";
 
 // HardwareStats is a struct containing information about the systems Memory usage and CPU
 message HardwareStats {

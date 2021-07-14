@@ -1,5 +1,7 @@
 package main
 
+// this a test client verify the grpc API, note this bypasses the HTTP proxy
+
 import (
 	"context"
 	"fmt"

@@ -15,6 +15,8 @@ ifeq ($(detected_OS),Linux)
 	apt install -y protobuf-compiler
 endif
 
+# this target does not work inside of github workflow due to protoc-gen-go not found in the path
+# it can be resolved, but for now we'll checkin the generated files
 generated/service.pb.go:
 	mkdir -p ./generated
 	PATH=$${PATH}:$$(go env GOPATH)/bin go get -u google.golang.org/protobuf/cmd/protoc-gen-go
