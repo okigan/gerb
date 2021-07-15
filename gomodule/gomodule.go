@@ -64,9 +64,7 @@ func run_server() {
 	// the usage of http2 over http1
 	grpcWebServer := grpcweb.WrapServer(gRPCserver)
 
-	multiplex := grpcMultiplexer{
-		grpcWebServer,
-	}
+	multiplex := grpcMultiplexer{grpcWebServer}
 
 	// a regular http router
 	mux := http.NewServeMux()
@@ -125,19 +123,13 @@ func (s *Server) GetCounterStream(req *gomoduleapi.EmptyRequest,
 
 	for {
 		select {
-		// Exit on stream context done
 		case <-stream.Context().Done():
 			log.Println("ending stream")
 			return nil
 		case <-timer.C:
 			log.Println("sending stats")
-			// Grab stats and output
-			hwStats := &gomoduleapi.CounterInfo{
-				Count: counter,
-			}
+			hwStats := &gomoduleapi.CounterInfo{Count: counter}
 			counter++
-
-			// Send the Hardware stats on the stream
 			err := stream.Send(hwStats)
 			if err != nil {
 				log.Println(err.Error())
@@ -151,9 +143,7 @@ var counter int32 = 0
 func (s *Server) GetCounter(context.Context, *gomoduleapi.EmptyRequest) (*gomoduleapi.CounterInfo, error) {
 	log.Println("in GetCounter")
 
-	hwStats := gomoduleapi.CounterInfo{
-		Count: counter,
-	}
+	hwStats := gomoduleapi.CounterInfo{Count: counter}
 	counter++
 
 	return &hwStats, nil
